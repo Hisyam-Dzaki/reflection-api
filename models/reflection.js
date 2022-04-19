@@ -10,14 +10,17 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.belongsTo(models.User, {
+        foreignKey: 'owner_id',
+        as: 'user'
+      })
     }
   }
   Reflection.init({
     success: DataTypes.STRING,
     low_point: DataTypes.STRING,
     take_away: DataTypes.STRING,
-    owner_id: DataTypes.STRING
+    owner_id: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Reflection',
