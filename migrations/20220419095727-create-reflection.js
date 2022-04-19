@@ -18,7 +18,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       owner_id: {
-        type: Sequelize.STRING
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
@@ -28,7 +28,19 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    }).then(() => {
+      queryInterface.addConstraint("Reflections", {
+        fields: ["owner_id"],
+        type: "foreign key",
+        name: "user_fk",
+        references: {
+          table: "Users",
+          field: "id",
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      })
+    })
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('Reflections');

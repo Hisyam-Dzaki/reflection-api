@@ -1,4 +1,3 @@
-const db = require("../config/db");
 const Reflection = require("../models/index").Reflection;
 const User = require("../models/index").User;
 
@@ -27,3 +26,24 @@ exports.postReflection = async (req, res) => {
     })
  }
    
+ exports.getReflections = async (req, res) => {
+     console.log(`userid: ${req.id}`)
+    User.findOne({where: {id: req.id}, 
+        include: {
+            model: Reflection,
+            as: 'reflections'
+        }
+    }).then(result => {
+        console.log("result");
+        console.log(result);
+        res.status(200).send({
+            status: "SUCCESS",
+            data: result
+        })
+    }).catch(error => {
+        res.status(503).send({
+            status: "FAILED",
+            message: "failed load reflections"
+        })
+    })
+}
