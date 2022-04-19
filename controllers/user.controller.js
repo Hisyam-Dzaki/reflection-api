@@ -3,7 +3,7 @@ const db = require("../config/db");
 const User = require("../models/index").User;
 const { generateToken } = require("../middlewares/auth");
 
-exports.signUp = async (req, res) => {
+exports.register = async (req, res) => {
     const body = req.body;
 
     const email = body.email;
