@@ -1,23 +1,23 @@
 {
   "development": {
-    "username": "",
-    "password": "",
+    "username": "postgres",
+    "password": "Hero-030400",
     "database": "db_reflection",
-    "host": "127.0.0.1",
+    "host": "localhost",
     "dialect": "postgres"
   },
   "test": {
-    "username": "",
-    "password": "",
+    "username": "postgres",
+    "password": "Hero-030400",
     "database": "db_reflection",
-    "host": "127.0.0.1",
+    "host": "localhost",
     "dialect": "postgres"
   },
   "production": {
-    "username": "",
-    "password": "",
+    "username": "postgres",
+    "password": "Hero-030400",
     "database": "db_reflection",
-    "host": "127.0.0.1",
+    "host": "localhost",
     "dialect": "postgres"
   }
 }
