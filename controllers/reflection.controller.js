@@ -26,6 +26,7 @@ exports.postReflection = async (req, res) => {
     })
 }
 
+
 exports.getReflections = async (req, res) => {
     console.log(`userid: ${req.id}`)
     User.findOne({
