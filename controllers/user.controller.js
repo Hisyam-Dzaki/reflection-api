@@ -47,3 +47,42 @@ exports.register = async (req, res) => {
 }
 
 
+exports.login = async (req, res) => {
+    const body = req.body;
+
+    const email = body.email;
+    const password = body.password;
+
+    User.findOne({
+        where: {
+            email: email
+        }
+    }).then(user => {
+        if (!user) {
+            return res.status(400).send({
+                message: 'Email not found'
+            })
+        }
+
+        const isValid = bcrypt.compareSync(password, user.password);
+
+        if (!isValid) {
+            return res.status(400).send({
+                message: 'Email and password not match'
+            })
+        }
+
+        const salt = bcrypt.genSaltSync(10)
+        const hash = bcrypt.hashSync(password, salt)
+
+        const token = generateToken({
+            id: user.id,
+            email: user.email
+        })
+        res.status(200).send({
+            status: 'SUCCESS',
+            message: 'Login Success',
+            token: token
+        })
+    })
+}
