@@ -21,10 +21,12 @@ exports.register = async (req, res) => {
         const hash = bcrypt.hashSync(body.password, salt)
         const queryInsert = `INSERT INTO "Users" ("email", "password", "createdAt", "updatedAt") values ('${body.email}', '${hash}', '${moment().format()}', '${moment().format()}')`;
 
-        sequelize.query(queryInsert, { type: QueryTypes.INSERT }).then((user) => {
+        sequelize.query(queryInsert, { type: QueryTypes.INSERT, plain: true }).then((user) => {
+            console.log("user");
+            console.log(user);
+
             const token = generateToken({
-                id: user.id,
-                email: user.email
+                email: body.email
             })
 
             res.status(200).send({
