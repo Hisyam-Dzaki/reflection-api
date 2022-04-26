@@ -28,7 +28,6 @@ exports.postReflection = async (req, res) => {
 
 
 exports.getReflections = async (req, res) => {
-    console.log(`userid: ${req.id}`)
     User.findOne({
         where: { id: req.id },
         include: {
@@ -51,7 +50,6 @@ exports.getReflections = async (req, res) => {
 }
 
 exports.putReflections = async (req, res) => {
-    console.log(`userid: ${req.id}`)
     const body = req.body;
     const success = body.success;
     const low_point = body.low_point;
@@ -70,7 +68,7 @@ exports.putReflections = async (req, res) => {
         res.status(200).send({
             status: "SUCCESS",
             message: "Reflection updated",
-            data: result
+            data: body
         })
     }).catch(error => {
         res.status(503).send({
