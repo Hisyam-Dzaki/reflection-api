@@ -1,31 +1,27 @@
 const bcrypt = require('bcrypt');
-const db = require("../config/db");
+const moment = require('moment');
 const User = require("../models/index").User;
+const { QueryTypes } = require('sequelize');
 const { generateToken } = require("../middlewares/auth");
+
+const { sequelize, Sequelize } = require('../config/db-sequelize');
 
 exports.register = async (req, res) => {
     const body = req.body;
 
-    const email = body.email;
-    const password = body.password;
+    const querySelect = `SELECT * FROM "Users" where email = '${body.email}'`;
 
-    User.findOne({
-        where: {
-            email: email
-        }
-    }).then(user => {
-        if (user) {
+    await sequelize.query(querySelect, { type: QueryTypes.SELECT }).then((result) => {
+        if (result.length >= 1) {
             return res.status(400).send({
                 message: 'Email already exist'
             })
         }
-
         const salt = bcrypt.genSaltSync(10)
-        const hash = bcrypt.hashSync(password, salt)
-        User.create({
-            email: email,
-            password: hash
-        }).then(user => {
+        const hash = bcrypt.hashSync(body.password, salt)
+        const queryInsert = `INSERT INTO "Users" ("email", "password", "createdAt", "updatedAt") values ('${body.email}', '${hash}', '${moment().format()}', '${moment().format()}')`;
+
+        sequelize.query(queryInsert, { type: QueryTypes.INSERT }).then((user) => {
             const token = generateToken({
                 id: user.id,
                 email: user.email
@@ -37,15 +33,13 @@ exports.register = async (req, res) => {
                 token: token
             })
         }).catch(error => {
-            console.log("error", error)
             res.status(503).send({
                 status: 'FAILED',
-                message: 'user creation failed'
+                message: 'User creation failed'
             })
         })
     })
 }
-
 
 exports.login = async (req, res) => {
     const body = req.body;
