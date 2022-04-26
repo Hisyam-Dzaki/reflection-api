@@ -50,11 +50,12 @@ exports.getReflections = async (req, res) => {
 }
 
 exports.putReflections = async (req, res) => {
+    console.log(`userid: ${req.id}`)
     const body = req.body;
     const success = body.success;
     const low_point = body.low_point;
     const take_away = body.take_away;
-    const id = req.body.id;
+    const id = req.params.id;
 
     return Reflection.update({
         success: success,
