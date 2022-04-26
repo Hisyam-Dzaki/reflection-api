@@ -10,6 +10,7 @@ const verify = async (req, res, next) => {
             })
         }
         req.id = decoded.id;
+        req.email = decoded.email;
 
         next();
     });
