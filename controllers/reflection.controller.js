@@ -36,29 +36,6 @@ exports.postReflection = async (req, res) => {
     })
 }
 
-
-// exports.getReflections = async (req, res) => {
-//     User.findOne({
-//         where: { id: req.id },
-//         include: {
-//             model: Reflection,
-//             as: 'reflections'
-//         }
-//     }).then(result => {
-//         console.log("result");
-//         console.log(result);
-//         res.status(200).send({
-//             status: "SUCCESS",
-//             data: result
-//         })
-//     }).catch(error => {
-//         res.status(503).send({
-//             status: "FAILED",
-//             message: "failed load reflections"
-//         })
-//     })
-// }
-
 exports.getReflections = async (req, res) => {
     const queryFind = `SELECT * FROM "Users" where email = '${req.email}'`
 
