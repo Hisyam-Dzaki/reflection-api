@@ -27,4 +27,4 @@ npm install
 
 ## Credits
 * Bagas Dewanggono, INJS-KS02-007, Computer Science, UPI.
-* Hisyam
+* Hisyam Dzaki Suatma, INJS-KS02-006, Informatics Engineering.
