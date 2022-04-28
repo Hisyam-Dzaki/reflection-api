@@ -1,8 +1,5 @@
 const moment = require('moment');
-const Reflection = require("../models/index").Reflection;
-const User = require("../models/index").User;
 const { QueryTypes } = require('sequelize');
-const { generateToken } = require("../middlewares/auth");
 
 const { sequelize, Sequelize } = require('../config/db-sequelize');
 
@@ -92,7 +89,6 @@ exports.deleteReflections = async (req, res) => {
         res.status(200).send({
             status: "SUCCESS",
             message: "Reflection deleted",
-            data: result
         })
     }
     ).catch(error => {
