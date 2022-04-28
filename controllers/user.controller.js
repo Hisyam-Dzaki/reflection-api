@@ -49,32 +49,29 @@ exports.login = async (req, res) => {
     const email = body.email;
     const password = body.password;
 
-    User.findOne({
-        where: {
-            email: email
-        }
-    }).then(user => {
-        if (!user) {
+    const querySelect = `SELECT * FROM "Users" where email = '${email}'`;
+
+    await sequelize.query(querySelect, { type: QueryTypes.SELECT }).then((result) => {
+        if (result.length < 1) {
             return res.status(400).send({
                 message: 'Email not found'
             })
         }
 
-        const isValid = bcrypt.compareSync(password, user.password);
+        const user = result[0];
 
-        if (!isValid) {
+        const comparePassword = bcrypt.compareSync(password, user.password);
+
+        if (!comparePassword) {
             return res.status(400).send({
                 message: 'Email and password not match'
             })
         }
 
-        const salt = bcrypt.genSaltSync(10)
-        const hash = bcrypt.hashSync(password, salt)
-
         const token = generateToken({
-            id: user.id,
             email: user.email
         })
+
         res.status(200).send({
             status: 'SUCCESS',
             message: 'Login Success',

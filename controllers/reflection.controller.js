@@ -64,15 +64,12 @@ exports.putReflections = async (req, res) => {
     const take_away = body.take_away;
     const id = req.params.id;
 
-    return Reflection.update({
-        success: success,
-        low_point: low_point,
-        take_away: take_away
-    }, {
-        where: {
-            id: id
-        }
-    }).then(result => {
+    const queryFind = `SELECT * FROM "Users" where email = '${req.email}'`;
+    const userDetail = await sequelize.query(queryFind, { type: QueryTypes.SELECT })
+
+    const queryUpdate = `UPDATE "Reflections" SET "success" = '${success}', "low_point" = '${low_point}', "take_away" = '${take_away}', "owner_id" = '${userDetail[0].id}', "updatedAt" = '${moment().format()}' WHERE "id" = '${id}'`;
+
+    await sequelize.query(queryUpdate, { type: QueryTypes.UPDATE }).then((result) => {
         res.status(200).send({
             status: "SUCCESS",
             message: "Reflection updated",
@@ -88,17 +85,17 @@ exports.putReflections = async (req, res) => {
 
 exports.deleteReflections = async (req, res) => {
     const id = req.params.id;
-    return Reflection.destroy({
-        where: {
-            id: id
-        }
-    }).then(result => {
+
+    const queryDelete = `DELETE FROM "Reflections" WHERE "id" = '${id}'`;
+
+    await sequelize.query(queryDelete, { type: QueryTypes.DELETE }).then((result) => {
         res.status(200).send({
             status: "SUCCESS",
             message: "Reflection deleted",
             data: result
         })
-    }).catch(error => {
+    }
+    ).catch(error => {
         res.status(503).send({
             status: "FAILED",
             message: "failed delete Reflection"
