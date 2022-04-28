@@ -1,11 +1,13 @@
 Sequelize = require('sequelize');
+require('dotenv').config();
+
 var sequelize = new Sequelize(
-    'db_reflection',
-    '',
-    '',
+    process.env.DB_DATABASE,
+    process.env.DB_USER,
+    process.env.DB_PASSWORD,
 
     {
-        host: 'localhost',
+        host: process.env.DB_HOST,
         dialect: 'postgres',
     }
 );
