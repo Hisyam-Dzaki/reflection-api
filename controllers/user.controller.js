@@ -21,10 +21,7 @@ exports.register = async (req, res) => {
         const hash = bcrypt.hashSync(body.password, salt)
         const queryInsert = `INSERT INTO "Users" ("email", "password", "createdAt", "updatedAt") values ('${body.email}', '${hash}', '${moment().format()}', '${moment().format()}')`;
 
-        sequelize.query(queryInsert, { type: QueryTypes.INSERT, plain: true }).then((user) => {
-            console.log("user");
-            console.log(user);
-
+        sequelize.query(queryInsert, { type: QueryTypes.INSERT }).then((user) => {
             const token = generateToken({
                 email: body.email
             })
@@ -52,6 +49,7 @@ exports.login = async (req, res) => {
     const querySelect = `SELECT * FROM "Users" where email = '${email}'`;
 
     await sequelize.query(querySelect, { type: QueryTypes.SELECT }).then((result) => {
+        console.log('result', result);
         if (result.length < 1) {
             return res.status(400).send({
                 message: 'Email not found'

@@ -14,6 +14,9 @@ exports.validatePostReflection = async (req, res, next) => {
     }
 };
 
+exports.verifyAuthReflecion = async (req, res, next) => {
+}
+
 exports.validatePutReflection = async (req, res, next) => {
     const schema = Joi.object().keys({
         success: Joi.string().required(),

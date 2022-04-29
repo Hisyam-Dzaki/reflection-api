@@ -7,6 +7,7 @@
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.3",
+    "node-mocks-http": "^1.11.0",
     "nodemon": "^2.0.15",
     "pg": "^8.7.3",
     "sequelize": "^6.19.0",
@@ -19,7 +20,7 @@
   "scripts": {
     "start": "nodemon app.js",
     "db:migrate": "sequelize db:migrate",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -31,5 +32,9 @@
   "bugs": {
     "url": "https://github.com/dewabagas/reflection-api/issues"
   },
-  "homepage": "https://github.com/dewabagas/reflection-api#readme"
+  "homepage": "https://github.com/dewabagas/reflection-api#readme",
+  "devDependencies": {
+    "jest": "^28.0.2",
+    "supertest": "^6.2.3"
+  }
 }

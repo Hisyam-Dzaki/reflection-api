@@ -3,7 +3,9 @@ let privateKey = 'yourbae';
 
 const verify = async (req, res, next) => {
     const token = req.headers["x-access-token"]
+    
     jwt.verify(token, privateKey, (err, decoded) => {
+        console.log("error", err);
         if (err) {
             return res.status(401).send({
                 err: 'Auth is Not Valid'
@@ -12,6 +14,19 @@ const verify = async (req, res, next) => {
         req.id = decoded.id;
         req.email = decoded.email;
 
+        next();
+    });
+}
+
+const checkUser = async (req, res, next) => {
+    const token = req.headers["x-access-token"]
+    
+    jwt.verify(token, privateKey, (err, decoded) => {
+        req.id = decoded.id;
+        req.email = decoded.email;
+
+        console.log('decoded', decoded);        
+        console.log('request', req.params);        
         next();
     });
 }
@@ -25,6 +40,7 @@ const generateToken = (payload) => {
 
 module.exports = {
     generateToken,
-    verify
+    verify,
+    checkUser
 };
 
