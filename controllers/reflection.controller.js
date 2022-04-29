@@ -1,10 +1,10 @@
+const e = require('express');
 const moment = require('moment');
 const { QueryTypes } = require('sequelize');
 
 const { sequelize, Sequelize } = require('../config/db-sequelize');
 
 exports.postReflection = async (req, res) => {
-    console.log(`req_id : ${req.email}`)
     const body = req.body;
     const success = body.success;
     const low_point = body.low_point;
@@ -16,7 +16,6 @@ exports.postReflection = async (req, res) => {
     const queryInsert = `INSERT INTO "Reflections" ("success", "low_point", "take_away", "owner_id", "createdAt", "updatedAt") 
     VALUES ('${success}', '${low_point}', '${take_away}', '${userDetail[0].id}', '${moment().format()}', '${moment().format()}')`;
 
-
     await sequelize.query(queryInsert, { type: QueryTypes.INSERT }).then((result) => {
         res.status(200).send({
             status: 'SUCCESS',
@@ -24,8 +23,6 @@ exports.postReflection = async (req, res) => {
             data: body
         })
     }).catch(error => {
-        console.log('eror');
-        console.log(error);
         res.status(503).send({
             status: 'FAILED',
             message: 'failed create Reflection'
@@ -64,14 +61,21 @@ exports.putReflections = async (req, res) => {
     const queryFind = `SELECT * FROM "Users" where email = '${req.email}'`;
     const userDetail = await sequelize.query(queryFind, { type: QueryTypes.SELECT })
 
-    const queryUpdate = `UPDATE "Reflections" SET "success" = '${success}', "low_point" = '${low_point}', "take_away" = '${take_away}', "owner_id" = '${userDetail[0].id}', "updatedAt" = '${moment().format()}' WHERE "id" = '${id}'`;
+    const queryUpdate = `UPDATE "Reflections" SET "success" = '${success}', "low_point" = '${low_point}', "take_away" = '${take_away}', "updatedAt" = '${moment().format()}' WHERE "id" = '${id}' and "owner_id" = '${userDetail[0].id}'`;
 
     await sequelize.query(queryUpdate, { type: QueryTypes.UPDATE }).then((result) => {
-        res.status(200).send({
-            status: "SUCCESS",
-            message: "Reflection updated",
-            data: body
-        })
+        console.log("result", result)
+        if (result[1] == 0) {
+            res.status(403).send({
+                message: 'Forbidden'
+            })
+        } else {
+            res.status(200).send({
+                status: "SUCCESS",
+                message: "Reflection updated",
+                data: body
+            })
+        }
     }).catch(error => {
         res.status(503).send({
             status: "FAILED",
@@ -83,15 +87,24 @@ exports.putReflections = async (req, res) => {
 exports.deleteReflections = async (req, res) => {
     const id = req.params.id;
 
-    const queryDelete = `DELETE FROM "Reflections" WHERE "id" = '${id}'`;
+    const queryFind = `SELECT * FROM "Users" where email = '${req.email}'`;
+    const userDetail = await sequelize.query(queryFind, { type: QueryTypes.SELECT })
+
+    const queryDelete = `DELETE FROM "Reflections" WHERE "id" = '${id}' and "owner_id" = '${userDetail[0].id}'`;
 
     await sequelize.query(queryDelete, { type: QueryTypes.DELETE }).then((result) => {
-        res.status(200).send({
-            status: "SUCCESS",
-            message: "Reflection deleted",
-        })
-    }
-    ).catch(error => {
+        console.log('result delete', result)
+        if (result.length == 0) {
+            res.status(403).send({
+                message: 'Forbidden'
+            })
+        } else {
+            res.status(200).send({
+                status: "SUCCESS",
+                message: "Reflection deleted",
+            })
+        }
+    }).catch(error => {
         res.status(503).send({
             status: "FAILED",
             message: "failed delete Reflection"
